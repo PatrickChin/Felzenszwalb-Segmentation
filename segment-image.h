@@ -140,9 +140,6 @@ image<rgb> *segment_image(  image<rgb> *im,
       }
     }
   }
-  delete smooth_r;
-  delete smooth_g;
-  delete smooth_b;
 
   // segment
   universe *u = segment_graph(width*height, num, edges, c);
@@ -160,21 +157,29 @@ image<rgb> *segment_image(  image<rgb> *im,
 
   image<rgb> *output = new image<rgb>(width, height);
 
-  // pick random colors for each component
-  rgb *colors = new rgb[width*height];
+  // all colours to 0,0,0
+  rgb_f *colors = new rgb_f[width*height];
   for (int i = 0; i < width*height; i++)
   {
-    colors[i] = random_rgb();
+    int rep = u->find(i);
+    colors[rep].r += smooth_r->data[i];
+    colors[rep].g += smooth_g->data[i];
+    colors[rep].b += smooth_b->data[i];
   }
-  
+
   for (int y = 0; y < height; y++)
   {
     for (int x = 0; x < width; x++)
     {
       int comp = u->find(y * width + x);
-      imRef(output, x, y) = colors[comp];
+      imRef(output, x, y) = rgb(colors[comp] / u->size(comp));
     }
   }  
+
+  delete smooth_r;
+  delete smooth_g;
+  delete smooth_b;
+
 
   delete [] colors;  
   delete u;

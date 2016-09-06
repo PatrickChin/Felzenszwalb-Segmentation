@@ -27,9 +27,25 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
 #define M_PI 3.141592653589793
 #endif
 
+typedef struct { float r, g, b; } rgb_f;
+
+inline rgb_f operator/(const rgb_f &a, const int &b) {
+  return { a.r / b, a.g / b, a.b / b };
+}
+
+inline bool operator==(const rgb_f &a, const rgb_f &b) {
+  return ((a.r == b.r) && (a.g == b.g) && (a.b == b.b));
+}
+
 typedef unsigned char uchar;
 
-typedef struct { uchar r, g, b; } rgb;
+typedef struct rgb {
+  uchar r, g, b;
+
+  rgb(): r(0), g(0), b(0) {};
+  rgb(const rgb_f a): r(a.r), g(a.g), b(a.b) {};
+
+} rgb;
 
 inline bool operator==(const rgb &a, const rgb &b) {
   return ((a.r == b.r) && (a.g == b.g) && (a.b == b.b));
